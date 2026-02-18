@@ -1,0 +1,182 @@
+[{
+  "_id": {
+    "$oid": "6990d1f84a3d69bbd2cd1e4f"
+  },
+  "user": "Admin User",
+  "role": "Admin",
+  "action": "LOGIN",
+  "details": "User logged into system",
+  "timestamp": {
+    "$date": "2026-02-14T19:50:16.972Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6990d82d3748c4a456cde593"
+  },
+  "user": "Admin User",
+  "role": "Admin",
+  "action": "LOGIN",
+  "details": "User logged into system",
+  "timestamp": {
+    "$date": "2026-02-14T20:16:45.753Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6990dd4fd87c8b8bf9671e07"
+  },
+  "user": "Admin User",
+  "role": "Admin",
+  "action": "LOGIN",
+  "details": "User logged into system",
+  "timestamp": {
+    "$date": "2026-02-14T20:38:39.927Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6990e0133b7c17dce7b29e18"
+  },
+  "user": "Admin User",
+  "role": "Admin",
+  "action": "LOGIN",
+  "details": "User logged into system",
+  "timestamp": {
+    "$date": "2026-02-14T20:50:27.283Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6990e24e3b7c17dce7b29e44"
+  },
+  "user": "Admin User",
+  "role": "Admin",
+  "action": "LOGIN",
+  "details": "User logged into system",
+  "timestamp": {
+    "$date": "2026-02-14T20:59:58.586Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6990e62a04567e6caa1724a8"
+  },
+  "user": "Public Website",
+  "role": "System",
+  "action": "CREATE_LEAD",
+  "details": "New Web Inquiry: gh",
+  "timestamp": {
+    "$date": "2026-02-14T21:16:26.812Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6990e63504567e6caa1724ab"
+  },
+  "user": "Admin User",
+  "role": "Admin",
+  "action": "LOGIN",
+  "details": "User logged into system",
+  "timestamp": {
+    "$date": "2026-02-14T21:16:37.011Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6990ec780041e886e163c3da"
+  },
+  "user": "Admin User",
+  "role": "Admin",
+  "action": "LOGIN",
+  "details": "User logged into system",
+  "timestamp": {
+    "$date": "2026-02-14T21:43:20.396Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69920fb4a8dd241a454881d2"
+  },
+  "user": "User-6990d1c7c767c21ada038783",
+  "role": "Admin",
+  "action": "DELETE_MEMBER",
+  "details": "Removed user: Rahul",
+  "timestamp": {
+    "$date": "2026-02-15T18:25:56.300Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69920fd2a8dd241a454881d8"
+  },
+  "user": "User-6990d1c7c767c21ada038783",
+  "role": "Admin",
+  "action": "INVITE_MEMBER",
+  "details": "Invited power as Manager",
+  "timestamp": {
+    "$date": "2026-02-15T18:26:26.877Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "699330b1da97a5e6246a5279"
+  },
+  "user": "User-6990d1c7c767c21ada038783",
+  "role": "Admin",
+  "action": "INVITE_MEMBER",
+  "details": "Invited support as Support",
+  "timestamp": {
+    "$date": "2026-02-16T14:58:57.851Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6993315a5a1ac60772157d3f"
+  },
+  "user": "User-6990d1c7c767c21ada038783",
+  "role": "Admin",
+  "action": "INVITE_MEMBER",
+  "details": "Invited viewer as Viewer",
+  "timestamp": {
+    "$date": "2026-02-16T15:01:46.148Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6993382290f6f3c464ba37af"
+  },
+  "user": "User-6990d1c7c767c21ada038783",
+  "role": "Admin",
+  "action": "UPDATE_LEAD",
+  "details": "Updated status of gh to New",
+  "timestamp": {
+    "$date": "2026-02-16T15:30:42.773Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69933d981ea7ed0de842a884"
+  },
+  "user": "User-6990d1c7c767c21ada038783",
+  "role": "Admin",
+  "action": "UPDATE_LEAD",
+  "details": "Updated status of gh to New",
+  "timestamp": {
+    "$date": "2026-02-16T15:54:00.727Z"
+  },
+  "__v": 0
+}]

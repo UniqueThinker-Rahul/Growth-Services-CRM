@@ -1,0 +1,30 @@
+[{
+  "_id": {
+    "$oid": "698dba2e342c3462b0c8f8e4"
+  },
+  "name": "Rahul Kumawat",
+  "role": "user",
+  "company": "NIET",
+  "email": "0241dcys071@niet.co.in",
+  "status": "Active",
+  "lastContact": "Just now",
+  "createdAt": {
+    "$date": "2026-02-12T11:31:58.146Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "698e0a3597c2efc3d6fa067b"
+  },
+  "name": "Ashu",
+  "role": "user",
+  "company": "NIET",
+  "email": "0241dcys071@niet.co.in",
+  "status": "Active",
+  "lastContact": "Just now",
+  "createdAt": {
+    "$date": "2026-02-12T17:13:25.370Z"
+  },
+  "__v": 0
+}]

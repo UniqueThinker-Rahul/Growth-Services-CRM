@@ -1,0 +1,80 @@
+[{
+  "_id": {
+    "$oid": "6990d1c7c767c21ada038783"
+  },
+  "name": "Admin User",
+  "role": "Admin",
+  "email": "admin@growth.io",
+  "password": "$2b$10$DR.y4k1xDTT6V20PsVzp8uuRsLkJxWmy7nzQhDqwjKgZYOWNUPItG",
+  "status": "Active",
+  "avatar": "AU",
+  "color": "purple",
+  "deals": 0,
+  "value": 0,
+  "createdAt": {
+    "$date": "2026-02-14T19:49:27.101Z"
+  },
+  "__v": 0,
+  "sessionId": "9f4fd79a59a6676f25606ef1d82fdffe",
+  "loginAttempts": 0
+},
+{
+  "_id": {
+    "$oid": "69920fd2a8dd241a454881d6"
+  },
+  "name": "power",
+  "email": "power@growth.io",
+  "password": "$2b$10$JQFnRdMJ4pKRChYYvsV5PO.fG68Wwuh2tU6tXXGWAB9azDdiJqB4S",
+  "role": "Manager",
+  "loginAttempts": 0,
+  "status": "Active",
+  "avatar": "P",
+  "color": "green",
+  "deals": 0,
+  "value": 0,
+  "createdAt": {
+    "$date": "2026-02-15T18:26:26.873Z"
+  },
+  "__v": 0,
+  "sessionId": "e50d74fe99fd6802f10a4be7ea492c0f"
+},
+{
+  "_id": {
+    "$oid": "699330b1da97a5e6246a5277"
+  },
+  "name": "support",
+  "email": "support@growth.io",
+  "password": "$2b$10$80fqiS/LMQ557nV4VWbLXuCRAUqardhfYFZZRIG4nYR/HH20Xwg0m",
+  "role": "Support",
+  "loginAttempts": 0,
+  "status": "Active",
+  "avatar": "S",
+  "color": "indigo",
+  "deals": 0,
+  "value": 0,
+  "createdAt": {
+    "$date": "2026-02-16T14:58:57.807Z"
+  },
+  "__v": 0,
+  "sessionId": "ccb57856de193a21f82f2d9907ff737a"
+},
+{
+  "_id": {
+    "$oid": "6993315a5a1ac60772157d3d"
+  },
+  "name": "viewer",
+  "email": "viewer@growth.io",
+  "password": "$2b$10$Zcfrk16mW1d/JbP0ScHBeuR1opaGQKRB8wtPdTV88BFNPREzVJEyG",
+  "role": "Viewer",
+  "loginAttempts": 0,
+  "status": "Active",
+  "avatar": "V",
+  "color": "pink",
+  "deals": 0,
+  "value": 0,
+  "createdAt": {
+    "$date": "2026-02-16T15:01:46.135Z"
+  },
+  "__v": 0,
+  "sessionId": "f79b460e71d2dfcae8d6d96e971255a3"
+}]

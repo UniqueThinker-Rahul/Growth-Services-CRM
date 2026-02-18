@@ -1,0 +1,126 @@
+const express = require('express');
+const router = express.Router();
+const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs'); // Make sure you ran: npm install bcryptjs
+const TeamMember = require('../models/TeamMember');
+const sendEmail = require('../utils/email');
+const { JWT_SECRET } = require('../middleware/auth');
+
+// --- 1. LOGIN ROUTE (Secure) ---
+router.post('/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) return res.status(400).json({ message: "Missing credentials" });
+
+    const user = await TeamMember.findOne({ email });
+    if (!user) return res.status(400).json({ message: "Invalid Credentials" });
+
+    // --- SECURITY: Check Account Lock ---
+    if (user.lockUntil && user.lockUntil > Date.now()) {
+        return res.status(423).json({ message: "Account locked. Try again in 15 minutes." });
+    }
+
+    // --- SECURITY: Check Password ---
+    const isMatch = user.password.startsWith('$2') 
+      ? await bcrypt.compare(password, user.password)
+      : user.password === password;
+
+    if (!isMatch) {
+        // Increment Failed Attempts
+        user.loginAttempts += 1;
+        
+        // Lock if > 5 attempts
+        if (user.loginAttempts >= 5) {
+            user.lockUntil = Date.now() + 15 * 60 * 1000; // Lock for 15 mins
+            await user.save();
+            return res.status(423).json({ message: "Too many failed attempts. Account locked for 15 minutes." });
+        }
+        
+        await user.save();
+        return res.status(400).json({ message: `Invalid Credentials. (${5 - user.loginAttempts} attempts remaining)` });
+    }
+
+    // --- SUCCESSFUL LOGIN ---
+    // Reset Lock counters
+    user.loginAttempts = 0;
+    user.lockUntil = undefined;
+
+    // Generate New Session ID (Kills old sessions)
+    const newSessionId = crypto.randomBytes(16).toString('hex');
+    user.sessionId = newSessionId;
+
+    // Auto-migrate legacy passwords
+    if (!user.password.startsWith('$2')) {
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(password, salt);
+    }
+
+    await user.save();
+
+    // Generate Token
+    const token = jwt.sign(
+      { id: user._id, role: user.role, sessionId: newSessionId }, 
+      JWT_SECRET, 
+      { expiresIn: '15m' } // 15 Min Hard Expiry
+    );
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      maxAge: 15 * 60 * 1000 
+    });
+
+    res.json({
+      success: true,
+      user: { _id: user._id, name: user.name, email: user.email, role: user.role, avatar: user.avatar }
+    });
+
+  } catch (err) {
+    console.error("Login Error:", err);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+// --- 2. LOGOUT ROUTE ---
+router.post('/logout', (req, res) => {
+  res.clearCookie('token');
+  res.json({ message: 'Logged out successfully' });
+});
+
+// --- 3. FORGOT PASSWORD ---
+router.post('/forgot-password', async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await TeamMember.findOne({ email });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const resetToken = crypto.randomBytes(20).toString('hex');
+    user.resetPasswordToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+    user.resetPasswordExpire = Date.now() + 10 * 60 * 1000; // 10 Minutes
+    await user.save();
+
+    const resetUrl = `http://localhost:5173/reset-password/${resetToken}`;
+    
+    // Attempt to send email
+    try {
+      await sendEmail({
+        email: user.email,
+        subject: 'Password Reset Token',
+        message: `<h1>Reset Password</h1><a href="${resetUrl}">Click here to reset</a>`
+      });
+      res.status(200).json({ success: true, data: "Email sent" });
+    } catch (err) {
+      // Rollback if email fails
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpire = undefined;
+      await user.save();
+      return res.status(500).json({ message: "Email could not be sent" });
+    }
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+module.exports = router;

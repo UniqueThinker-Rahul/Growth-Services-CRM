@@ -1,0 +1,16 @@
+[{
+  "_id": {
+    "$oid": "6990e62a04567e6caa1724a6"
+  },
+  "name": "gh",
+  "company": "hbjknm",
+  "email": "0241dcys071@niet.co.in",
+  "value": 0,
+  "source": "Website Form",
+  "status": "New",
+  "assigned": "power",
+  "createdAt": {
+    "$date": "2026-02-14T21:16:26.804Z"
+  },
+  "__v": 0
+}]
