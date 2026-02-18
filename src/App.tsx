@@ -29,7 +29,8 @@ const InactivityHandler = () => {
     const TIMEOUT_MS = 15 * 60 * 1000; 
 
     useEffect(() => {
-        let idleTimer: NodeJS.Timeout;
+        // FIX: Use 'number' instead of 'NodeJS.Timeout' for browser compatibility
+        let idleTimer: number;
 
         const logoutUser = async () => {
             console.log("User inactive. Logging out...");
@@ -41,7 +42,8 @@ const InactivityHandler = () => {
 
         const resetTimer = () => {
             if (idleTimer) clearTimeout(idleTimer);
-            idleTimer = setTimeout(logoutUser, TIMEOUT_MS);
+            // FIX: Use 'window.setTimeout' to force browser API
+            idleTimer = window.setTimeout(logoutUser, TIMEOUT_MS);
         };
 
         // Listen for user activity
@@ -86,7 +88,8 @@ const App: React.FC = () => {
   }, []);
 
   // --- UPDATED: Role-Based Protected Route ---
-  const ProtectedRoute = ({ children, allowedRoles }: { children: JSX.Element, allowedRoles?: string[] }) => {
+  // Using 'any' for children to prevent strict typing issues during build
+  const ProtectedRoute = ({ children, allowedRoles }: { children: any, allowedRoles?: string[] }) => {
     if (!isAuthenticated) return <Navigate to="/login" replace />;
     
     // If specific roles are required, check if user has one of them
@@ -110,7 +113,8 @@ const App: React.FC = () => {
         }}
       />
       
-      <InactivityHandler />
+      {/* Only run inactivity handler if logged in */}
+      {isAuthenticated && <InactivityHandler />}
 
       <Routes>
         {/* Public Routes */}
