@@ -21,7 +21,8 @@ app.use(cors({
     "http://localhost:5173", // Standard Vite Port
     "http://localhost:5174", // Backup Vite Port
     "http://localhost:5175",
-    "https://growthservice-crm.vercel.app" // Future Deployment
+    "https://growthservice-crm.vercel.app", // Future Deployment
+    "https://growth-services-crm.vercel.app"
   ],
   credentials: true, // Allow cookies
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
