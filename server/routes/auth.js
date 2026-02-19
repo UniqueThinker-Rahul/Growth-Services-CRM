@@ -123,4 +123,40 @@ router.post('/forgot-password', async (req, res) => {
   }
 });
 
+// --- 4. UPDATE PASSWORD ROUTE ---
+router.put('/update-password', async (req, res) => {
+  try {
+    const { email, currentPassword, newPassword } = req.body;
+
+    // 1. Find the user in the database
+    const user = await TeamMember.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    // 2. Check if the current password matches
+    // Note: handling both plain text (legacy) and hashed passwords for safety
+    const isMatch = user.password.startsWith('$2') 
+      ? await bcrypt.compare(currentPassword, user.password)
+      : user.password === currentPassword;
+
+    if (!isMatch) {
+      return res.status(400).json({ message: "Incorrect current password." });
+    }
+
+    // 3. Hash the new password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    // 4. Update and save
+    user.password = hashedPassword;
+    await user.save();
+
+    res.status(200).json({ message: "Password updated successfully!" });
+  } catch (error) {
+    console.error("Update Password Error:", error);
+    res.status(500).json({ message: "Server error while updating password." });
+  }
+});
+
 module.exports = router;
