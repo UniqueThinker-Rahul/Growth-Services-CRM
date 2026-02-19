@@ -9,7 +9,7 @@ require('dotenv').config();
 console.log("Debug Mongo URI:", process.env.MONGO_URI);
 
 const app = express();
-
+app.set('trust proxy', 1);
 // 1. SECURITY & CONFIGURATION
 app.use(helmet());
 app.use(express.json());
