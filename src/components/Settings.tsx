@@ -1,10 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import api from '../utils/api'; 
+import toast from 'react-hot-toast'; 
 
 const Settings: React.FC = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('Profile');
   const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // --- NEW STATE FOR PASSWORD UPDATE ---
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [isUpdating, setIsUpdating] = useState(false);
 
   // 1. GET USER FROM LOCAL STORAGE (Dynamic Data)
   const user = JSON.parse(localStorage.getItem('user') || '{"name": "User", "email": "user@growth.io", "role": "Guest"}');
@@ -48,6 +55,27 @@ const Settings: React.FC = () => {
     localStorage.removeItem('user');
     localStorage.removeItem('token'); // Clear the security token
     navigate('/login');
+  };
+
+  // --- NEW FUNCTION: HANDLE PASSWORD UPDATE ---
+  const handleUpdatePassword = async () => {
+    if (!currentPassword || !newPassword) {
+        toast.error("Please fill in both password fields.");
+        return;
+    }
+
+    setIsUpdating(true);
+    try {
+        // Assuming your backend route is '/auth/update-password'
+        await api.put('/auth/update-password', { email: user.email, currentPassword, newPassword });
+        toast.success("Password updated successfully!");
+        setCurrentPassword(''); // Clear the fields on success
+        setNewPassword('');
+    } catch (error: any) {
+        toast.error(error.response?.data?.message || "Failed to update password.");
+    } finally {
+        setIsUpdating(false);
+    }
   };
 
   return (
@@ -133,7 +161,7 @@ const Settings: React.FC = () => {
             {/* Content Area */}
             <div className="flex-1 p-6 md:p-8">
               
-              {/* Profile Tab - UPDATED DYNAMIC DATA */}
+              {/* Profile Tab */}
               {activeTab === 'Profile' && (
                 <div className="space-y-6">
                   <div>
@@ -169,7 +197,7 @@ const Settings: React.FC = () => {
                 </div>
               )}
 
-              {/* Account Tab */}
+              {/* Account Tab - FIXED ACTIVE STATE & API CALL */}
               {activeTab === 'Account' && (
                 <div className="space-y-6">
                    <div>
@@ -179,15 +207,31 @@ const Settings: React.FC = () => {
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Current Password</label>
-                      <input type="password" className="mt-1 block w-full rounded-md border-border-light dark:border-border-dark bg-white dark:bg-slate-800 p-2 border" />
+                      <input 
+                        type="password" 
+                        value={currentPassword}
+                        onChange={(e) => setCurrentPassword(e.target.value)}
+                        className="mt-1 block w-full rounded-md border-border-light dark:border-border-dark bg-white dark:bg-slate-800 p-2 border outline-none focus:border-[#8B24C5] dark:text-white" 
+                      />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">New Password</label>
-                      <input type="password" className="mt-1 block w-full rounded-md border-border-light dark:border-border-dark bg-white dark:bg-slate-800 p-2 border" />
+                      <input 
+                        type="password" 
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        className="mt-1 block w-full rounded-md border-border-light dark:border-border-dark bg-white dark:bg-slate-800 p-2 border outline-none focus:border-[#8B24C5] dark:text-white" 
+                      />
                     </div>
                   </div>
                   <div className="pt-4 border-t border-border-light dark:border-border-dark flex justify-end">
-                    <button className="bg-[#8B24C5] text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-purple-700 transition-colors">Update Password</button>
+                    <button 
+                      onClick={handleUpdatePassword}
+                      disabled={isUpdating}
+                      className="bg-[#8B24C5] text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isUpdating ? 'Updating...' : 'Update Password'}
+                    </button>
                   </div>
                 </div>
               )}
