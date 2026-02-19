@@ -1,24 +1,27 @@
 const nodemailer = require('nodemailer');
 
 const sendEmail = async (options) => {
-  // 1. Create Transporter (Use your Gmail credentials)
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: {
-      user: process.env.EMAIL_USER, // Ensure this is in your .env
-      pass: process.env.EMAIL_PASS  // Ensure this is in your .env
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+    // This forces Node.js to use IPv4, fixing the ENETUNREACH error on Render
+    tls: {
+      rejectUnauthorized: false
     }
   });
 
-  // 2. Define Email Options
   const mailOptions = {
-    from: `"GrowthService Support" <${process.env.EMAIL_USER}>`,
+    from: `"GrowthService CRM" <${process.env.EMAIL_USER}>`,
     to: options.email,
     subject: options.subject,
-    html: options.message
+    html: options.message,
   };
 
-  // 3. Send Email
   await transporter.sendMail(mailOptions);
 };
 
