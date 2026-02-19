@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Modal from './Modal'; 
 import api from '../utils/api';
-import Skeleton from './Skeleton'; // Make sure you created this file in Step 1
+import Skeleton from './Skeleton'; 
 
 interface AnalyticsData {
   totalRevenue: number;
@@ -33,6 +33,9 @@ const Dashboard: React.FC = () => {
   const user = JSON.parse(localStorage.getItem('user') || '{"name": "User", "role": "Guest"}');
   const getInitials = (name: string) => name ? name.split(' ').map(n=>n[0]).join('').substring(0, 2).toUpperCase() : '??';
 
+  // --- THE FIX: Case-Insensitive Role Checker ---
+  const hasRole = (roles: string[]) => roles.some(r => r.toLowerCase() === (user.role || '').toLowerCase());
+
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
@@ -44,6 +47,7 @@ const Dashboard: React.FC = () => {
   const [newLead, setNewLead] = useState({ name: '', company: '', email: '', value: '' });
 
   useEffect(() => {
+    // FIX 1: Ensure function name matches the call below
     const fetchData = async () => {
       try {
         const [statsRes, leadsRes, teamRes] = await Promise.all([
@@ -61,6 +65,8 @@ const Dashboard: React.FC = () => {
         setLoading(false);
       }
     };
+    
+    // FIX 2: Changed from fetchDashboardData() to fetchData() to match line 50
     fetchData();
   }, []);
 
@@ -82,7 +88,7 @@ const Dashboard: React.FC = () => {
   return (
     <div className="bg-background-light dark:bg-background-dark font-body text-text-light dark:text-text-dark antialiased transition-colors duration-200 h-screen flex overflow-hidden">
       
-      {/* Sidebar (Same as before) */}
+      {/* Sidebar with Role Protection */}
       <aside className={`w-64 bg-surface-light dark:bg-surface-dark border-r border-gray-200 dark:border-gray-700 flex flex-col fixed md:relative z-30 h-full transition-transform duration-300 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
         <div className="h-16 flex items-center px-6 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center gap-2">
@@ -92,14 +98,21 @@ const Dashboard: React.FC = () => {
         </div>
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
           <Link to="/dashboard" className="flex items-center px-3 py-2 text-sm font-medium rounded-md bg-purple-50 text-[#8B24C5] dark:bg-purple-900/20 dark:text-purple-300 group"><span className="material-icons-outlined mr-3 text-lg">dashboard</span>Dashboard</Link>
-          <Link to="/leads" className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 group transition-colors"><span className="material-icons-outlined mr-3 text-lg text-gray-400 group-hover:text-gray-500">person_add</span>Leads</Link>
-          <Link to="/pipeline" className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 group transition-colors"><span className="material-icons-outlined mr-3 text-lg text-gray-400 group-hover:text-gray-500">view_kanban</span>Pipeline</Link>
-          <Link to="/contacts" className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 group transition-colors"><span className="material-icons-outlined mr-3 text-lg text-gray-400 group-hover:text-gray-500">contacts</span>Contacts</Link>
-          <div className="pt-4 pb-1 pl-3 text-xs font-semibold text-gray-500 uppercase tracking-wider dark:text-gray-400">Management</div>
-          <Link to="/team" className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 group transition-colors"><span className="material-icons-outlined mr-3 text-lg text-gray-400 group-hover:text-gray-500">groups</span>Team</Link>
-          <Link to="/analytics" className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 group transition-colors"><span className="material-icons-outlined mr-3 text-lg text-gray-400 group-hover:text-gray-500">insights</span>Analytics</Link>
+          
+          {hasRole(['Admin', 'Manager', 'Sales Rep']) && <Link to="/leads" className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 group transition-colors"><span className="material-icons-outlined mr-3 text-lg text-gray-400 group-hover:text-gray-500">person_add</span>Leads</Link>}
+          {hasRole(['Admin', 'Manager', 'Sales Rep']) && <Link to="/pipeline" className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 group transition-colors"><span className="material-icons-outlined mr-3 text-lg text-gray-400 group-hover:text-gray-500">view_kanban</span>Pipeline</Link>}
+          {hasRole(['Admin', 'Manager', 'Support']) && <Link to="/contacts" className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 group transition-colors"><span className="material-icons-outlined mr-3 text-lg text-gray-400 group-hover:text-gray-500">contacts</span>Contacts</Link>}
+          
+          {hasRole(['Admin', 'Manager']) && (
+              <>
+                <div className="pt-4 pb-1 pl-3 text-xs font-semibold text-gray-500 uppercase tracking-wider dark:text-gray-400">Management</div>
+                <Link to="/team" className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 group transition-colors"><span className="material-icons-outlined mr-3 text-lg text-gray-400 group-hover:text-gray-500">groups</span>Team</Link>
+                <Link to="/analytics" className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 group transition-colors"><span className="material-icons-outlined mr-3 text-lg text-gray-400 group-hover:text-gray-500">insights</span>Analytics</Link>
+              </>
+          )}
+
           <div className="pt-4 pb-1 pl-3 text-xs font-semibold text-gray-500 uppercase tracking-wider dark:text-gray-400">System</div>
-          {(user.role === 'Admin' || user.role === 'Administrator') && (<Link to="/logs" className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 group transition-colors"><span className="material-icons-outlined mr-3 text-lg text-gray-400 group-hover:text-gray-500">list_alt</span>Activity Logs</Link>)}
+          {hasRole(['Admin', 'Administrator']) && (<Link to="/logs" className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 group transition-colors"><span className="material-icons-outlined mr-3 text-lg text-gray-400 group-hover:text-gray-500">list_alt</span>Activity Logs</Link>)}
           <Link to="/settings" className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 group transition-colors"><span className="material-icons-outlined mr-3 text-lg text-gray-400 group-hover:text-gray-500">settings</span>Settings</Link>
         </nav>
       </aside>
