@@ -89,7 +89,7 @@ router.post('/logout', (req, res) => {
   res.json({ message: 'Logged out successfully' });
 });
 
-// --- 3. FORGOT PASSWORD ---
+// --- 3. FORGOT PASSWORD (BYPASS FIX APPLIED) ---
 router.post('/forgot-password', async (req, res) => {
   const { email } = req.body;
   try {
@@ -101,22 +101,26 @@ router.post('/forgot-password', async (req, res) => {
     user.resetPasswordExpire = Date.now() + 10 * 60 * 1000; // 10 Minutes
     await user.save();
 
-    const resetUrl = `http://localhost:5173/reset-password/${resetToken}`;
+    // Uses your live URL from Render Environment Variables, or localhost as fallback
+    const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+    const resetUrl = `${clientUrl}/reset-password/${resetToken}`;
     
-    // Attempt to send email
+    // TEMPORARY BYPASS: Log to Render Console instead of emailing
     try {
-      await sendEmail({
-        email: user.email,
-        subject: 'Password Reset Token',
-        message: `<h1>Reset Password</h1><a href="${resetUrl}">Click here to reset</a>`
-      });
-      res.status(200).json({ success: true, data: "Email sent" });
+      console.log("\n==========================================");
+      console.log("🚀 PASSWORD RESET LINK GENERATED");
+      console.log("User:", user.email);
+      console.log("Link:", resetUrl);
+      console.log("==========================================\n");
+      
+      // Tell frontend success so the button stops loading
+      res.status(200).json({ success: true, message: "Reset link generated in server logs" });
     } catch (err) {
-      // Rollback if email fails
+      // Rollback if something fails
       user.resetPasswordToken = undefined;
       user.resetPasswordExpire = undefined;
       await user.save();
-      return res.status(500).json({ message: "Email could not be sent" });
+      return res.status(500).json({ message: "Failed to generate link" });
     }
   } catch (err) {
     res.status(500).json({ message: err.message });
