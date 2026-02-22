@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast'; 
 
 import api from './utils/api'; // Import API for logout
@@ -102,7 +102,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <Router>
+    <>
       <Toaster 
         position="top-right"
         toastOptions={{
@@ -145,7 +145,7 @@ const App: React.FC = () => {
         
         <Route path="*" element={<NotFound />} />
       </Routes>
-    </Router>
+    </>
   );
 };
 
