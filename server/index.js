@@ -18,12 +18,13 @@ app.use(cookieParser());
 // 2. CORS (Fixes the blocking error)
 app.use(cors({
   origin: [
-    "http://localhost:5173", // Standard Vite Port
-    "http://localhost:5174", // Backup Vite Port
-    "http://localhost:5175",
+    // "http://localhost:5173", // Standard Vite Port
+    // "http://localhost:5174", // Backup Vite Port
+    // "http://localhost:5175",
     "https://growthservice-crm.vercel.app", // Future Deployment
     "https://growth-services-crm.vercel.app",
-   "https://growth-services-crm-mocha.vercel.app"
+   "https://growth-services-crm-mocha.vercel.app",
+    "https://crm.growthservice.in"
   ],
   credentials: true, // Allow cookies
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
