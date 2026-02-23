@@ -33,5 +33,15 @@ router.get('/download', verifyToken, authorize('Admin', 'Administrator'), async 
     res.status(500).send('Error generating CSV');
   }
 });
+router.delete('/', verifyToken, authorize('Admin', 'Administrator'), async (req, res) => {
+  try {
+    // deleteMany({}) deletes all documents in the ActivityLog collection
+    await ActivityLog.deleteMany({}); 
+    res.status(200).json({ message: 'All system logs have been successfully cleared.' });
+  } catch (err) {
+    console.error("Error clearing logs:", err);
+    res.status(500).json({ message: 'Failed to clear logs on the server.' });
+  }
+});
 
 module.exports = router;
